@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Phoboo</string>
+
+    <string name="customGallery">Custom Gallery</string>
+    <string name="mainTitle">Select MultipleImages From Gallery</string>
+    <string name="openCustomGallery">Open Custom Gallery</string>
+    <string name="selectedImages">Selected Images will display below</string>
+
 </resources>
