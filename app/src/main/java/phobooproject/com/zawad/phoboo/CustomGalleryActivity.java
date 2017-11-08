@@ -1,6 +1,8 @@
 package phobooproject.com.zawad.phoboo;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +22,16 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
     private GridView galleryImagesGridView;
     private ArrayList<String> galleryImageUrls;
     private GridViewAdapter imagesAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.customgallery_activity);
+        initViews();
+        setListeners();
+        fetchGalleryImages();
+        setUpGridView();
+    }
 
     //Init all views
     private void initViews() {
@@ -54,6 +66,12 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
         selectImages.setOnClickListener(this);
     }
 
+    //Set Up GridView method
+    private void setUpGridView() {
+        imagesAdapter = new GridViewAdapter(CustomGalleryActivity.this, galleryImageUrls, true);
+        galleryImagesGridView.setAdapter(imagesAdapter);
+    }
+
     //Show hide select button if images are selected or deselected
     public void showSelectButton() {
         ArrayList<String> selectedItems = imagesAdapter.getCheckedItems();
@@ -66,6 +84,21 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
     }
     @Override
     public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.selectImagesBtn:
+
+                //When button is clicked then fill array with selected images
+                ArrayList<String> selectedItems = imagesAdapter.getCheckedItems();
+
+                //Send back result to MainActivity with selected images
+                Intent intent = new Intent();
+                intent.putExtra(HomeActivity.CustomGalleryIntentKey, selectedItems.toString());//Convert Array into string to pass data
+                setResult(RESULT_OK, intent);//Set result OK
+                finish();//finish activity
+                break;
+
+        }
 
     }
 }
