@@ -78,8 +78,8 @@ public class GridViewAdapter extends BaseAdapter {
         if (view == null)
             view = inflater.inflate(R.layout.customgridview_item, viewGroup, false);//Inflate layout
 
-        CheckBox mCheckBox = (CheckBox) view.findViewById(R.id.selectCheckBox);
-        final ImageView imageView = (ImageView) view.findViewById(R.id.galleryImageView);
+        CheckBox mCheckBox = view.findViewById(R.id.selectCheckBox);
+        final ImageView imageView = view.findViewById(R.id.galleryImageView);
 
         //If Context is MainActivity then hide checkbox
         if (!isCustomGalleryActivity)

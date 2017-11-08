@@ -23,8 +23,8 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
 
     //Init all views
     private void initViews() {
-        selectImages = (Button) findViewById(R.id.selectImagesBtn);
-        galleryImagesGridView = (GridView) findViewById(R.id.galleryImagesGridView);
+        selectImages = findViewById(R.id.selectImagesBtn);
+        galleryImagesGridView = findViewById(R.id.galleryImagesGridView);
 
     }
 
