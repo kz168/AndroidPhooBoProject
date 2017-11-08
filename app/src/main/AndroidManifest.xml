@@ -3,7 +3,7 @@
     package="phobooproject.com.zawad.phoboo">
 
     <!-- Include following permission if you want to cache images on SD card -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MainApplicationClass"
@@ -19,7 +19,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <!-- Intent filter action for receiving multiple images  -->
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!--  To receive Images set mime type to image -->
+                <data android:mimeType="image/*" />
+            </intent-filter>
         </activity>
+
+        <!-- Custom Gallery Activity -->
+        <activity
+            android:name=".CustomGalleryActivity"
+            android:label="@string/customGallery" />
     </application>
 
 </manifest>
