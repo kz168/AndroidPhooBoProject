@@ -9,8 +9,8 @@
         android:id="@+id/galleryImageView"
         android:layout_width="140dp"
         android:layout_height="170dp"
-        android:src="@mipmap/ic_launcher"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
 
     <CheckBox
         android:id="@+id/selectCheckBox"
