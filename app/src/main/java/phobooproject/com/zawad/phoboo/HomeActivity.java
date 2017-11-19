@@ -20,6 +20,7 @@ import phobooproject.com.zawad.phoboo.Adapter.GridViewAdapter;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     private Button openCustomGallery;
     private GridView selectedImageGridView;
+    private ArrayList<String> uploadArraylist;
 
     private static final int CustomGallerySelectId = 1;//Set Intent Id
     public static final String CustomGalleryIntentKey = "ImageArray";//Set Intent Key Value
@@ -63,8 +64,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultcode == RESULT_OK) {
                     String imagesArray = imagereturnintent.getStringExtra(CustomGalleryIntentKey);//get Intent data
                     //Convert string array into List by splitting by ',' and substring after '[' and before ']'
-                    List<String> selectedImages = Arrays.asList(imagesArray.substring(1, imagesArray.length() - 1).split(", "));
-                    loadGridView(new ArrayList<String>(selectedImages));//call load gridview method by passing converted list into arrayList
+                    //List<String> selectedImages = Arrays.asList(imagesArray.substring(1, imagesArray.length() - 1).split(", "));
+                    uploadArraylist = new ArrayList<String>(Arrays.asList(imagesArray.substring(1, imagesArray.length() - 1).split(", ")));
+                    //loadGridView(new ArrayList<String>(selectedImages)); //call load gridview method by passing converted list into arrayList
+                    loadGridView(uploadArraylist);
                 }
                 break;
 
@@ -93,6 +96,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 String sourcepath = getPath(uri);//Get Path of URI
                 selectedImages.add(sourcepath);//add images to arraylist
             }
+
             loadGridView(selectedImages);//call load gridview
         }
     }
