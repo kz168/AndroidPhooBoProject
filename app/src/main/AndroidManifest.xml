@@ -4,6 +4,7 @@
 
     <!-- Include following permission if you want to cache images on SD card -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".MainApplicationClass"

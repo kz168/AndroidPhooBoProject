@@ -2,23 +2,39 @@ package phobooproject.com.zawad.phoboo;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import phobooproject.com.zawad.phoboo.Adapter.GridViewAdapter;
+import phobooproject.com.zawad.phoboo.RequestUtils.CommandExec;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button openCustomGallery;
+    private Button openCustomGallery,uploadButton;
     private GridView selectedImageGridView;
     private ArrayList<String> uploadArraylist;
 
@@ -37,12 +53,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //Init all views
     private void initViews() {
         openCustomGallery = (Button) findViewById(R.id.openCustomGallery);
+        uploadButton = (Button) findViewById(R.id.uploadImageButton);
         selectedImageGridView = (GridView) findViewById(R.id.selectedImagesGridView);
     }
 
     //set Listeners
     private void setListeners() {
         openCustomGallery.setOnClickListener(this);
+        uploadButton.setOnClickListener(this);
     }
 
     @Override
@@ -51,6 +69,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.openCustomGallery:
                 //Start Custom Gallery Activity by passing intent id
                 startActivityForResult(new Intent(HomeActivity.this, CustomGalleryActivity.class), CustomGallerySelectId);
+                break;
+            case R.id.uploadImageButton:
+                uploadImage();
                 break;
         }
 
@@ -68,6 +89,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     uploadArraylist = new ArrayList<String>(Arrays.asList(imagesArray.substring(1, imagesArray.length() - 1).split(", ")));
                     //loadGridView(new ArrayList<String>(selectedImages)); //call load gridview method by passing converted list into arrayList
                     loadGridView(uploadArraylist);
+                    showUploadButton();
                 }
                 break;
 
@@ -110,5 +132,55 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+    public void showUploadButton(){
+        if(uploadArraylist.size() > 0){
+            uploadButton.setText("Upload "+uploadArraylist.size()+" Images");
+            uploadButton.setVisibility(View.VISIBLE);
+        }else {
+            uploadButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void uploadImage(){
+        String serverUrl = "http://192.168.0.105/UploadExample/upload.php";
+        CommandExec command = new CommandExec(getApplicationContext());
+        for(String imagePath : uploadArraylist){
+            String imageUri = "file://" + imagePath;
+            Bitmap ImageBitmap = ImageLoader.getInstance().loadImageSync(imageUri);
+            final String enocodedImage = imageToString(ImageBitmap);
+
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, serverUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),"Error while uploading image",Toast.LENGTH_LONG).show();
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String,String> paramsMap = new HashMap<>();
+                    paramsMap.put("image",enocodedImage);
+                    return paramsMap;
+                }
+            };
+         command.add(stringRequest);
+        }
+
+        command.execute();
+
+    }
+
+    private String imageToString(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgBytes,Base64.DEFAULT);
     }
 }

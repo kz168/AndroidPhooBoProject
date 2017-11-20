@@ -27,6 +27,17 @@
         android:textColor="#009688"
         android:textSize="15sp" />
 
+    <Button
+        android:id="@+id/uploadImageButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="#ffffff"
+        android:textColor="#009688"
+        android:textSize="15sp"
+        android:visibility="gone"/>
+
+
 
     <View
         android:layout_width="fill_parent"
@@ -50,16 +61,7 @@
         layout="@layout/gridview_layout" />
 
    <!--  Button to Upload selected Images  -->
-    <Button
-        android:id="@+id/uploadImageButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="5dp"
-        android:background="#ffffff"
-        android:textColor="#009688"
-        android:textSize="15sp"
-        android:visibility="gone"/>
+
 
 
 
