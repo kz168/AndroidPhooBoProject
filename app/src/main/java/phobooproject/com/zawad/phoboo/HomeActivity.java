@@ -9,18 +9,26 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+//import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+//import com.android.volley.VolleyError;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.SimpleMultiPartRequest;
+//import com.android.volley.toolbox.JsonObjectRequest;
+//import com.android.volley.toolbox.StringRequest;
+import com.android.volley.request.StringRequest;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +40,7 @@ import java.util.Map;
 
 import phobooproject.com.zawad.phoboo.Adapter.GridViewAdapter;
 import phobooproject.com.zawad.phoboo.RequestUtils.CommandExec;
+import phobooproject.com.zawad.phoboo.RequestUtils.RequestSingleton;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     private Button openCustomGallery,uploadButton;
@@ -146,11 +155,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void uploadImage(){
         String serverUrl = "http://192.168.0.105/UploadExample/upload.php";
         CommandExec command = new CommandExec(getApplicationContext());
-        for(String imagePath : uploadArraylist){
+
+
+        for(String imagePath : uploadArraylist) {
             String imageUri = "file://" + imagePath;
             Bitmap ImageBitmap = ImageLoader.getInstance().loadImageSync(imageUri);
             final String enocodedImage = imageToString(ImageBitmap);
-
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, serverUrl, new Response.Listener<String>() {
                 @Override
@@ -171,9 +181,38 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }
             };
          command.add(stringRequest);
+      /*      SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, serverUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Response", response);
+                            try {
+                                JSONObject jObj = new JSONObject(response);
+                                String message = jObj.getString("message");
+
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                            } catch (JSONException e) {
+                                // JSON error
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            smr.addFile("image",imagePath);
+            command.add(smr);*/
         }
 
+
         command.execute();
+
 
     }
 
@@ -182,5 +221,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgBytes,Base64.DEFAULT);
+
     }
 }

@@ -19,7 +19,7 @@ public class RequestSingleton {
         mCtx = context;
         mRequestQueue = getRequestQueue();
 
-        mImageLoader = new ImageLoader(mRequestQueue,
+     /*   mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
                             cache = new LruCache<String, Bitmap>(20);
@@ -33,7 +33,7 @@ public class RequestSingleton {
                     public void putBitmap(String url, Bitmap bitmap) {
                         cache.put(url, bitmap);
                     }
-                });
+                });*/
     }
 
     public static synchronized RequestSingleton getInstance(Context context) {
