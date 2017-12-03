@@ -1,13 +1,17 @@
 package phobooproject.com.zawad.phoboo;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int CustomGallerySelectId = 1;//Set Intent Id
     public static final String CustomGalleryIntentKey = "ImageArray";//Set Intent Key Value
+    private static final int progressId = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,16 +161,38 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         String serverUrl = "http://192.168.0.105/UploadExample/upload.php";
         CommandExec command = new CommandExec(getApplicationContext());
 
+        final NotificationManager mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setContentTitle("Picture Upload")
+                .setContentText("Upload in progress")
+                .setSmallIcon(R.mipmap.ic_launcher_round);
+        final int maxUploadSize = uploadArraylist.size();
+        mBuilder.setProgress(maxUploadSize, 0, false);
+        mNotifyManager.notify(progressId, mBuilder.build());
+        final int[] counter = {1};
 
         for(String imagePath : uploadArraylist) {
             String imageUri = "file://" + imagePath;
             Bitmap ImageBitmap = ImageLoader.getInstance().loadImageSync(imageUri);
             final String enocodedImage = imageToString(ImageBitmap);
 
+
+
             StringRequest stringRequest = new StringRequest(Request.Method.POST, serverUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                    mBuilder.setProgress(maxUploadSize, counter[0], false);
+                    mNotifyManager.notify(progressId, mBuilder.build());
+                    counter[0] = counter[0] + 1;
+
+                    if(counter[0] == (maxUploadSize + 1)){
+                        mBuilder.setContentText("Upload complete")
+                                .setProgress(0,0,false);
+                        mNotifyManager.notify(progressId, mBuilder.build());
+                    }
+
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -177,11 +204,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String,String> paramsMap = new HashMap<>();
                     paramsMap.put("image",enocodedImage);
+                   // paramsMap.put("name","zawad"); //TODO :Uncomment when using DB
                     return paramsMap;
                 }
             };
          command.add(stringRequest);
-      /*      SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, serverUrl,
+       /*     SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, serverUrl,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -212,6 +240,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         command.execute();
+
 
 
     }
