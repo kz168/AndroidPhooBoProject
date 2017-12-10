@@ -45,15 +45,17 @@ import java.util.Map;
 import phobooproject.com.zawad.phoboo.Adapter.GridViewAdapter;
 import phobooproject.com.zawad.phoboo.RequestUtils.CommandExec;
 import phobooproject.com.zawad.phoboo.RequestUtils.RequestSingleton;
+import phobooproject.com.zawad.phoboo.SessionHolder.SessionManager;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button openCustomGallery,uploadButton;
+    private Button openCustomGallery,uploadButton,logoutButton;
     private GridView selectedImageGridView;
     private ArrayList<String> uploadArraylist;
 
     private static final int CustomGallerySelectId = 1;//Set Intent Id
     public static final String CustomGalleryIntentKey = "ImageArray";//Set Intent Key Value
     private static final int progressId = 100;
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         initViews();
         setListeners();
         getSharedImages();
+
+        session = new SessionManager(getApplicationContext());
+
+        if (!session.isLoggedIn()) {
+            logOutUser();
+        }
     }
 
     //Init all views
@@ -69,12 +77,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         openCustomGallery = (Button) findViewById(R.id.openCustomGallery);
         uploadButton = (Button) findViewById(R.id.uploadImageButton);
         selectedImageGridView = (GridView) findViewById(R.id.selectedImagesGridView);
+        logoutButton = (Button) findViewById(R.id.logoutButton);
     }
 
     //set Listeners
     private void setListeners() {
         openCustomGallery.setOnClickListener(this);
         uploadButton.setOnClickListener(this);
+        logoutButton.setOnClickListener(this);
     }
 
     @Override
@@ -86,6 +96,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.uploadImageButton:
                 uploadImage();
+                break;
+            case R.id.logoutButton:
+                logOutUser();
                 break;
         }
 
@@ -250,6 +263,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgBytes,Base64.DEFAULT);
+
+    }
+
+    private void logOutUser(){
+        session.setLogin(false);
+        // Launching the login activity
+        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 }

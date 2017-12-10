@@ -28,6 +28,16 @@
         android:textSize="15sp" />
 
     <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="#ffffff"
+        android:text="@string/btn_logout"
+        android:textColor="#009688"
+        android:textSize="15sp" />
+
+    <Button
         android:id="@+id/uploadImageButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

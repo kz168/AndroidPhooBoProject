@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import phobooproject.com.zawad.phoboo.Adapter.GridViewAdapter;
+import phobooproject.com.zawad.phoboo.SessionHolder.SessionManager;
 
 /**
  * Created by ws5103 on 11/8/17.
@@ -30,6 +31,7 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
     private GridView galleryImagesGridView;
     private ArrayList<String> galleryImageUrls;
     private GridViewAdapter imagesAdapter;
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,9 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
 
     //load the initial views and app components
     private void onload(){
+        if (!session.isLoggedIn()) {
+            logOutUser();
+        }
         initViews();
         setListeners();
         fetchGalleryImages();
@@ -166,5 +171,14 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
         }
+    }
+
+    private void logOutUser(){
+        session.setLogin(false);
+        // Launching the login activity
+        Intent intent = new Intent(CustomGalleryActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 }
