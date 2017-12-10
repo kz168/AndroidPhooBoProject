@@ -65,7 +65,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setListeners();
         getSharedImages();
 
-        session = new SessionManager(getApplicationContext());
+        session = SessionManager.getInstance(getApplicationContext());
 
         if (!session.isLoggedIn()) {
             logOutUser();

@@ -47,7 +47,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         pDialog = new ProgressDialog(this); //Setting up the progress Dialog
         pDialog.setCancelable(false);
 
-        session = new SessionManager(getApplicationContext());
+        session = SessionManager.getInstance(getApplicationContext());
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

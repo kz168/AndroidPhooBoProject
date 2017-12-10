@@ -26,12 +26,21 @@ public class SessionManager {
 
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
-    public SessionManager(Context context) {
+    private static SessionManager instance = null;
+
+    private SessionManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
 
+    public static SessionManager getInstance(Context context){
+        if(instance == null){
+            instance = new SessionManager(context);
+        }
+
+        return instance;
+    }
     public void setLogin(boolean isLoggedIn) {
 
         editor.putBoolean(KEY_IS_LOGGEDIN, isLoggedIn);

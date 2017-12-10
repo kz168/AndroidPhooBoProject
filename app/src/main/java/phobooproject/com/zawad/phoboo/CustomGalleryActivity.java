@@ -44,6 +44,7 @@ public class CustomGalleryActivity extends AppCompatActivity implements View.OnC
             {
                 // Code for above or equal 23 API Oriented Device
                 // Your Permission granted already .Do next code
+                session = SessionManager.getInstance(getApplicationContext());
                onload();
 
             } else {
